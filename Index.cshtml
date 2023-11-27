@@ -1,0 +1,116 @@
+﻿@using EShopMVCNet7.ViewModels.HomePage
+@model IEnumerable<ProductListItem>
+
+@section head{
+    <style>
+        .product-sumary {
+            height: 100px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-name {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    </style>
+}
+
+<div class="row mt-4">
+    <h6 class="text-center display-6">@ViewBag.Title</h6>
+    @foreach (var p in Model)
+    {
+        <div class="col-md-3 my-2">
+            <div class="card">
+                <a asp-action="Detail" asp-route-Id="@p.Id">
+                    <img src="@p.CoverImg" class="card-img-top" style="height: 250px; object-fit:cover">
+                </a>
+                <div class="card-body">
+                    <h6 class="card-title product-name">
+                        <a asp-action="Detail" asp-controller="Home" asp-route-Id="@p.Id" class="">@p.Name</a>
+                    </h6>
+                    <small class="badge small bg-info">@p.CategoryName</small>
+                    @{
+                        var isDiscount = false;
+                        if (p.DiscountPrice.HasValue)
+                        {
+                            var startDate = p.DiscountFrom ?? DateTime.MinValue;
+                            var endDate = p.DiscountTo ?? DateTime.MaxValue;
+                            isDiscount = startDate <= DateTime.Now && endDate >= DateTime.Now;
+
+                        }
+                    }
+                    @if (isDiscount)
+                    {
+                        <p class="card-text">
+                            <s class="badge bg-secondary">@p.Price.ToString("#,#")</s>
+                            <span class="badge bg-success">@p.DiscountPrice?.ToString("#,#")</span>
+
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="card-text">
+                            <span class="badge bg-success">@p.Price.ToString("#,#")</span>
+                        </p>
+                    }
+                    <a class="btn btn-secondary d-block my-3" asp-controller="Cart" asp-action="AddToCart" Asp-route-productId="@p.Id">
+                        Thêm vào giỏ hàng
+                    </a>
+
+                    <p class="card-text small product-sumary">@p.Summary</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<footer class="text-center text-lg-start bg-light text-muted">
+    <section class="mt-3">
+        <div class="container text-center text-md-start p-3">
+            <div class="row mt-3" style="margin-top: 10px">
+                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        <i class="fas fa-gem me-3"></i>Page name
+                    </h6>
+                    <p>
+                        <a asp-action="Index">NASHOP</a>
+                    </p>
+                </div>
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Products
+                    </h6>
+                    <p>
+                        <a href="#!" class="text-reset">Angular</a>
+                    </p>
+                </div>
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <h6 class="text-uppercase fw-bold mb-4">
+                        Useful links
+                    </h6>
+                    <p>
+                        <a href="#!" class="text-reset">Pricing</a>
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+
+                    <h6 class="text-uppercase fw-bold mb-4">Contact</h6>
+                    <p><i class="fas fa-home me-3"></i> Cần Thơ</p>
+                    <p>
+                        <i class="fas fa-envelope me-3"></i>
+                        info@example.com
+                    </p>
+                    <p><i class="fas fa-phone me-3"></i> + 0100000009</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+        © 2021
+    </div>
+</footer>
